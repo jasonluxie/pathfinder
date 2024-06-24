@@ -6,7 +6,6 @@ function App() {
   return (
     <>
       <GridContainer></GridContainer>
-      <Toolbar></Toolbar>
     </>
   );
 }

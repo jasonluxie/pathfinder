@@ -4,7 +4,7 @@ import { GrPowerReset } from "react-icons/gr";
 
 const Toolbar = () => {
   return (
-    <div id="toolbar flex">
+    <div id="toolbar flex bg-muted-teal p-5">
       <button id="start">
         <PiFlagPennantBold />
       </button>

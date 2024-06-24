@@ -1,5 +1,6 @@
 import React from "react";
 import GridNode from "./GridNode";
+import Toolbar from '../components/Toolbar'
 const GridContainer = () => {
   //get viewport height and width
   let verticalAxis:number = Math.ceil(document.documentElement.clientHeight / 28);
@@ -27,6 +28,7 @@ const GridContainer = () => {
   return (
     <>
       <div className={`h-svh w-svw bg-light-grey`}>{column.map((child) => child)}</div>
+      <Toolbar></Toolbar>
     </>
   );
 };
