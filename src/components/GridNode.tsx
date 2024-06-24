@@ -3,12 +3,13 @@ import React from "react";
 interface NodeMetaProps {
   x: number;
   y: number;
+  key: string;
 }
 
 const GridNode = ({ x, y }: NodeMetaProps) => {
   const nodeLocation = `${x}_${y}`;
 
-  return <div id={nodeLocation} className="node border border-solid border-indigo-500"></div>;
+  return <div id={nodeLocation} className="node w-7 h-7 border border-solid border-indigo-500"></div>;
 };
 
 export default GridNode;
