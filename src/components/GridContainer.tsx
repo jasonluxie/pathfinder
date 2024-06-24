@@ -17,7 +17,7 @@ const GridContainer = () => {
     }
     //horizontal container all of the nodes created in a row
     let row = (
-      <div className="flex" id={`row${y + 1}`}>
+      <div className="flex" id={`row${y + 1}`} key={`key${y+1}`}>
         {rowNodes.map((child) => child)}
       </div>
     );
@@ -26,7 +26,7 @@ const GridContainer = () => {
   }
   return (
     <>
-      <div className={`h-svh w-svw`}>{column.map((child) => child)}</div>
+      <div className={`h-svh w-svw bg-light-grey`}>{column.map((child) => child)}</div>
     </>
   );
 };
