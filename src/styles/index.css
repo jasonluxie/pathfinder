@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#root {
+  overflow: hidden; /* This hides scrollbars */
+  height: 100vh;   /* Optional: Set body height to viewport height */
+  margin: 0;       /* Remove margins to prevent unwanted scrolling */
+}

@@ -1,10 +1,15 @@
-import React from "react";
+import react, { useState, useEffect } from "react";
 import GridNode from "./GridNode";
-import Toolbar from '../components/Toolbar'
+import Toolbar from "../components/Toolbar";
+
 const GridContainer = () => {
   //get viewport height and width
-  let verticalAxis:number = Math.ceil(document.documentElement.clientHeight / 28);
-  let horizontalAxis:number = Math.ceil(document.documentElement.clientWidth / 28);
+  let verticalAxis: number = Math.ceil(
+    document.documentElement.clientHeight / 28
+  );
+  let horizontalAxis: number = Math.ceil(
+    document.documentElement.clientWidth / 28
+  );
 
   let column = [];
   for (let y = 0; y < verticalAxis; y++) {
@@ -18,7 +23,7 @@ const GridContainer = () => {
     }
     //horizontal container all of the nodes created in a row
     let row = (
-      <div className="flex" id={`row${y + 1}`} key={`key${y+1}`}>
+      <div className="flex" id={`row${y + 1}`} key={`key${y + 1}`}>
         {rowNodes.map((child) => child)}
       </div>
     );
@@ -26,10 +31,12 @@ const GridContainer = () => {
     column.push(row);
   }
   return (
-    <>
-      <div className={`h-svh w-svw bg-light-grey`}>{column.map((child) => child)}</div>
+    <div id="grid-container" className="flex">
+      <div className={`h-svh w-svw bg-light-grey`}>
+        {column.map((child) => child)}
+      </div>
       <Toolbar></Toolbar>
-    </>
+    </div>
   );
 };
 

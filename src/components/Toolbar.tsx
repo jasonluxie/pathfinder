@@ -3,20 +3,23 @@ import { PiFlagPennantBold, PiFlagPennantFill } from "react-icons/pi";
 import { GrPowerReset } from "react-icons/gr";
 
 const Toolbar = () => {
+  const test = () => {
+    console.log("test")
+  }
   return (
-    <div id="toolbar flex bg-muted-teal p-5">
-      <button id="start">
+    <div className="bg-muted-teal p-2 fixed bottom-1 justify-center"id="toolbar ">
+      <button className='p-2' id="start" onClick={test}>
         <PiFlagPennantBold />
       </button>
-      <button id="end">
+      <button className='p-2' id="end">
         <PiFlagPennantFill />
       </button>
-      <select>
+      <select className='p-2'>
         <option>A*</option>
         <option>Dijkstra</option>
       </select>
-      <button>Start</button>
-      <button id="reset">
+      <button className='p-2'>Start</button>
+      <button className='p-2'id="reset">
         <GrPowerReset />
       </button>
     </div>
