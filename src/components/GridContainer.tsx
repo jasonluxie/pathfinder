@@ -2,7 +2,12 @@ import react, { useState, useEffect } from "react";
 import GridNode from "./GridNode";
 import Toolbar from "../components/Toolbar";
 
+//Game Master logic should live here
 const GridContainer = () => {
+  const [startNode, setStartNode] = useState();
+  const [endNode, setEndNode] = useState();
+  const [flagType, setFlagType] = useState("start");
+
   //get viewport height and width
   let verticalAxis: number = Math.ceil(
     document.documentElement.clientHeight / 28
@@ -35,7 +40,7 @@ const GridContainer = () => {
       <div className={`h-svh w-svw bg-light-grey`}>
         {column.map((child) => child)}
       </div>
-      <Toolbar></Toolbar>
+      <Toolbar setStartNode={setStartNode}></Toolbar>
     </div>
   );
 };
