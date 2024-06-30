@@ -6,7 +6,22 @@ import Toolbar from "../components/Toolbar";
 const GridContainer = () => {
   const [startNode, setStartNode] = useState();
   const [endNode, setEndNode] = useState();
-  const [flagType, setFlagType] = useState("start");
+  const [activeFlag, setactiveFlag] = useState("start");
+  const [startFlagNode, setStartFlagNode] = useState("")
+  const [endFlagNode, setendFlagNode] = useState("")
+
+//attach to container holding grid, get status of which flag is active from hotbar, then add flag to desired node
+  const flagManagement = (event) => {
+    if (activeFlag == "start") {
+      
+    } else if (activeFlag == "end") {
+
+    } else {
+
+    }
+}
+
+  }
 
   //get viewport height and width
   let verticalAxis: number = Math.ceil(

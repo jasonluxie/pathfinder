@@ -11,7 +11,7 @@ interface PropTypes {
 const Toolbar: React.FC<PropTypes> = ({ setStartNode, setEndNode, setFlagType }) => {
 
   const setActiveTool = (event:React.MouseEvent<HTMLButtonElement>) => {
-
+    
   }
 
   return (
