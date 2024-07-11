@@ -6,14 +6,15 @@ import Toolbar from "../components/Toolbar";
 const GridContainer = () => {
   const [startNode, setStartNode] = useState();
   const [endNode, setEndNode] = useState();
-  const [activeFlag, setactiveFlag] = useState("start");
-  const [startFlagNode, setStartFlagNode] = useState("")
-  const [endFlagNode, setendFlagNode] = useState("")
+  const [activeFlag, setActiveFlag] = useState("start");
 
 //attach to container holding grid, get status of which flag is active from hotbar, then add flag to desired node
   const flagManagement = (event) => {
     if (activeFlag == "start") {
-      
+      if (startNode) {
+        
+      }
+      setStartNode(event.target.key)
     } else if (activeFlag == "end") {
 
     } else {
@@ -38,7 +39,7 @@ const GridContainer = () => {
     //loop generating a horizontal row of nodes which get pushed into above array
     for (let x = 0; x < horizontalAxis; x++) {
       rowNodes.push(
-        <GridNode x={x + 1} y={y + 1} key={`node${x}${y}}`}></GridNode>
+        <GridNode x={x + 1} y={y + 1} id={`${x}${y}`}key={`node${x}${y}`}></GridNode>
       );
     }
     //horizontal container all of the nodes created in a row
@@ -55,7 +56,7 @@ const GridContainer = () => {
       <div className={`h-svh w-svw bg-light-grey`}>
         {column.map((child) => child)}
       </div>
-      <Toolbar setStartNode={setStartNode}></Toolbar>
+      <Toolbar props={setStartNode, setEndNode, setActiveFlag}></Toolbar>
     </div>
   );
 };

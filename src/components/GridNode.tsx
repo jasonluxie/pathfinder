@@ -3,6 +3,7 @@ import React from "react";
 interface NodeMetaProps {
   x: number;
   y: number;
+  id: string;
   key: string;
 }
 
