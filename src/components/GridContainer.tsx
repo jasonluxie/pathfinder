@@ -2,57 +2,40 @@ import react, { useState, useEffect } from "react";
 import GridNode from "./GridNode";
 import Toolbar from "../components/Toolbar";
 
-//Game Master logic should live here
 const GridContainer = () => {
   const [startNode, setStartNode] = useState();
   const [endNode, setEndNode] = useState();
   const [activeFlag, setactiveFlag] = useState("start");
-  const [startFlagNode, setStartFlagNode] = useState("")
-  const [endFlagNode, setendFlagNode] = useState("")
+  const [startFlagNode, setStartFlagNode] = useState("");
+  const [endFlagNode, setendFlagNode] = useState("");
 
-//attach to container holding grid, get status of which flag is active from hotbar, then add flag to desired node
-  const flagManagement = (event) => {
-    if (activeFlag == "start") {
-      
-    } else if (activeFlag == "end") {
+  // Calculate grid dimensions based on viewport size
+  const cellSize = 28; // Size of each cell in pixels
+  const verticalAxis = Math.floor(window.innerHeight / cellSize);
+  const horizontalAxis = Math.floor(window.innerWidth / cellSize);
 
-    } else {
-
-    }
-}
-
-  }
-
-  //get viewport height and width
-  let verticalAxis: number = Math.ceil(
-    document.documentElement.clientHeight / 28
-  );
-  let horizontalAxis: number = Math.ceil(
-    document.documentElement.clientWidth / 28
-  );
-
-  let column = [];
+  const column = [];
   for (let y = 0; y < verticalAxis; y++) {
-    //need to reset horizontal array each loop
     const rowNodes: Array<JSX.Element> = [];
-    //loop generating a horizontal row of nodes which get pushed into above array
     for (let x = 0; x < horizontalAxis; x++) {
       rowNodes.push(
-        <GridNode x={x + 1} y={y + 1} key={`node${x}${y}}`}></GridNode>
+        <GridNode x={x + 1} y={y + 1} key={`node${x}${y}`} />
       );
     }
-    //horizontal container all of the nodes created in a row
-    let row = (
+    const row = (
       <div className="flex" id={`row${y + 1}`} key={`key${y + 1}`}>
-        {rowNodes.map((child) => child)}
+        {rowNodes}
       </div>
     );
-    //vertical container which holds all horizontal containers
     column.push(row);
   }
+
   return (
-    <div id="grid-container" className="flex">
-      <div className={`h-svh w-svw bg-light-grey`}>
+    <div
+      id="grid-container"
+      className="flex justify-center items-center h-screen w-screen bg-light-grey"
+    >
+      <div className="grid-container">
         {column.map((child) => child)}
       </div>
       <Toolbar setStartNode={setStartNode}></Toolbar>
