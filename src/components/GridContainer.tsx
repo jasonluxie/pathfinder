@@ -5,12 +5,11 @@ import Toolbar from "../components/Toolbar";
 const GridContainer = () => {
   const [startNode, setStartNode] = useState();
   const [endNode, setEndNode] = useState();
-  const [activeFlag, setactiveFlag] = useState("start");
+  const [activeFlag, setActiveFlag] = useState("start");
   const [startFlagNode, setStartFlagNode] = useState("");
-  const [endFlagNode, setendFlagNode] = useState("");
+  const [endFlagNode, setEndFlagNode] = useState("");
 
-  // Calculate grid dimensions based on viewport size
-  const cellSize = 28; // Size of each cell in pixels
+  const cellSize = 28; 
   const verticalAxis = Math.floor(window.innerHeight / cellSize);
   const horizontalAxis = Math.floor(window.innerWidth / cellSize);
 
@@ -38,7 +37,7 @@ const GridContainer = () => {
       <div className="grid-container">
         {column.map((child) => child)}
       </div>
-      <Toolbar setStartNode={setStartNode}></Toolbar>
+      <Toolbar props={setStartNode, setEndNode, setActiveFlag}></Toolbar>
     </div>
   );
 };
