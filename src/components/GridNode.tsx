@@ -1,7 +1,8 @@
 import { Node } from "../types/types";
 
 interface GridNodeProps extends Node {
-  onClick: () => void;
+  onMouseDown: () => void;
+  onMouseEnter: () => void;
 }
 
 const GridNode = ({
@@ -10,7 +11,8 @@ const GridNode = ({
   isWall,
   isVisited,
   isPath,
-  onClick,
+  onMouseDown,
+  onMouseEnter,
 }: GridNodeProps) => {
   const classes = `node w-7 h-7 border border-gray-400 transition-colors ${
     isStart
@@ -26,7 +28,7 @@ const GridNode = ({
       : "bg-gray-200 hover:bg-gray-300"
   }`;
 
-  return <div className={classes} onClick={onClick}></div>;
+  return <div className={classes} onMouseDown={onMouseDown} onMouseEnter={onMouseEnter}></div>;
 };
 
 export default GridNode;

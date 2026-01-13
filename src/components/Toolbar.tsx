@@ -1,35 +1,66 @@
 import React from "react";
 import { PiFlagPennantBold, PiFlagPennantFill } from "react-icons/pi";
 import { GrPowerReset } from "react-icons/gr";
+import { Algorithm } from "../types/types";
 
-interface PropTypes {
-  setStartNode: VoidFunction;
-  setEndNode: VoidFunction;
-  setFlagType: VoidFunction;
+interface ToolbarProps {
+  activeTool: "start" | "end" | "wall";
+  setActiveTool: (tool: "start" | "end" | "wall") => void;
+  algorithm: Algorithm;
+  setAlgorithm: (algorithm: Algorithm) => void;
+  startPathfinding: () => void;
+  clearGrid: () => void;
 }
 
-const Toolbar: React.FC<PropTypes> = ({ setStartNode, setEndNode, setFlagType }) => {
-
-  const setActiveTool = (event:React.MouseEvent<HTMLButtonElement>) => {
-    
-  }
-
+const Toolbar: React.FC<ToolbarProps> = ({
+  activeTool,
+  setActiveTool,
+  algorithm,
+  setAlgorithm,
+  startPathfinding,
+  clearGrid,
+}) => {
   return (
     <div
-      className="bg-muted-teal p-2 fixed bottom-1 justify-center"
-      id="toolbar ">
-      <button className="p-2" id="start" onClick={() => setFlagType("start")}>
+      className="bg-muted-teal p-2 fixed bottom-1 justify-center flex items-center gap-4"
+      id="toolbar"
+    >
+      <button
+        className={`p-2 ${
+          activeTool === "start" ? "bg-green-500" : "bg-gray-300"
+        }`}
+        onClick={() => setActiveTool("start")}
+      >
         <PiFlagPennantBold />
       </button>
-      <button className="p-2" id="end">
+      <button
+        className={`p-2 ${
+          activeTool === "end" ? "bg-red-500" : "bg-gray-300"
+        }`}
+        onClick={() => setActiveTool("end")}
+      >
         <PiFlagPennantFill />
       </button>
-      <select className="p-2">
-        <option>A*</option>
-        <option>Dijkstra</option>
+      <button
+        className={`p-2 ${
+          activeTool === "wall" ? "bg-gray-800 text-white" : "bg-gray-300"
+        }`}
+        onClick={() => setActiveTool("wall")}
+      >
+        Wall
+      </button>
+      <select
+        className="p-2"
+        value={algorithm}
+        onChange={(e) => setAlgorithm(e.target.value as Algorithm)}
+      >
+        <option value="dijkstra">Dijkstra</option>
+        <option value="a*">A*</option>
       </select>
-      <button className="p-2">Start</button>
-      <button className="p-2" id="reset">
+      <button className="p-2 bg-blue-500 text-white" onClick={startPathfinding}>
+        Start
+      </button>
+      <button className="p-2" id="reset" onClick={clearGrid}>
         <GrPowerReset />
       </button>
     </div>

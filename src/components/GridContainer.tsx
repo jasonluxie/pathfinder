@@ -1,14 +1,22 @@
 import { useState, useEffect } from "react";
 import GridNode from "./GridNode";
 import { useScreenSize } from "../hooks/useScreenSize";
-import { Grid, Node } from "../types/types";
+import { Grid, Node, Algorithm } from "../types/types";
+import Toolbar from "./Toolbar";
 
 const GridContainer = () => {
   const [grid, setGrid] = useState<Grid>([]);
+  const [startNode, setStartNode] = useState<Node | null>(null);
+  const [endNode, setEndNode] = useState<Node | null>(null);
+  const [activeTool, setActiveTool] = useState<"start" | "end" | "wall">(
+    "wall"
+  );
+  const [algorithm, setAlgorithm] = useState<Algorithm>("dijkstra");
+  const [isMousePressed, setIsMousePressed] = useState(false);
   const { width, height } = useScreenSize();
 
   const cellSize = 28;
-  const rows = Math.floor(height / cellSize);
+  const rows = Math.floor((height - 80) / cellSize);
   const cols = Math.floor(width / cellSize);
 
   useEffect(() => {
@@ -41,18 +49,56 @@ const GridContainer = () => {
     };
   };
 
+  const handleMouseDown = (row: number, col: number) => {
+    setIsMousePressed(true);
+    handleNodeClick(row, col);
+  };
+
+  const handleMouseEnter = (row: number, col: number) => {
+    if (!isMousePressed) return;
+    handleNodeClick(row, col);
+  };
+
+  const handleMouseUp = () => {
+    setIsMousePressed(false);
+  };
+
   const handleNodeClick = (row: number, col: number) => {
     const newGrid = grid.slice();
     const node = newGrid[row][col];
-    node.isWall = !node.isWall;
+
+    if (activeTool === "start") {
+      if (startNode) {
+        newGrid[startNode.row][startNode.col].isStart = false;
+      }
+      node.isStart = true;
+      setStartNode(node);
+    } else if (activeTool === "end") {
+      if (endNode) {
+        newGrid[endNode.row][endNode.col].isEnd = false;
+      }
+      node.isEnd = true;
+      setEndNode(node);
+    } else {
+      node.isWall = !node.isWall;
+    }
+
     newGrid[row][col] = node;
     setGrid(newGrid);
+  };
+
+  const clearGrid = () => {
+    const newGrid = createGrid(rows, cols);
+    setGrid(newGrid);
+    setStartNode(null);
+    setEndNode(null);
   };
 
   return (
     <div
       id="grid-container"
-      className="flex justify-center items-center h-screen w-screen bg-light-grey"
+      className="flex flex-col justify-center items-center h-screen w-screen bg-light-grey"
+      onMouseUp={handleMouseUp}
     >
       <div className="grid-container">
         {grid.map((row, rowIndex) => (
@@ -61,12 +107,21 @@ const GridContainer = () => {
               <GridNode
                 key={nodeIndex}
                 {...node}
-                onClick={() => handleNodeClick(rowIndex, nodeIndex)}
+                onMouseDown={() => handleMouseDown(rowIndex, nodeIndex)}
+                onMouseEnter={() => handleMouseEnter(rowIndex, nodeIndex)}
               />
             ))}
           </div>
         ))}
       </div>
+      <Toolbar
+        activeTool={activeTool}
+        setActiveTool={setActiveTool}
+        algorithm={algorithm}
+        setAlgorithm={setAlgorithm}
+        startPathfinding={() => {}}
+        clearGrid={clearGrid}
+      />
     </div>
   );
 };
