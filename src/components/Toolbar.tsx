@@ -11,6 +11,8 @@ interface ToolbarProps {
   startPathfinding: () => void;
   clearGrid: () => void;
   isVisualizing: boolean;
+  visualizationSpeed: number;
+  setVisualizationSpeed: (speed: number) => void;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -21,6 +23,8 @@ const Toolbar: React.FC<ToolbarProps> = ({
   startPathfinding,
   clearGrid,
   isVisualizing,
+  visualizationSpeed,
+  setVisualizationSpeed,
 }) => {
   return (
     <div
@@ -61,8 +65,23 @@ const Toolbar: React.FC<ToolbarProps> = ({
         onChange={(e) => setAlgorithm(e.target.value as Algorithm)}
       >
         <option value="dijkstra">Dijkstra</option>
-        <option value="a*">A*</option>
+        <option value="astar">A*</option>
       </select>
+      <div className="flex items-center gap-2">
+        <label htmlFor="speed" className="text-white">
+          Speed
+        </label>
+        <input
+          disabled={isVisualizing}
+          id="speed"
+          type="range"
+          min="10"
+          max="100"
+          step="10"
+          value={visualizationSpeed}
+          onChange={(e) => setVisualizationSpeed(Number(e.target.value))}
+        />
+      </div>
       <button
         disabled={isVisualizing}
         className="p-2 bg-blue-500 text-white"

@@ -5,12 +5,17 @@ export function astar(
   startNode: Node,
   endNode: Node
 ): { visitedNodesInOrder: Node[]; shortestPath: Node[] } {
+  const newGrid = grid.map((row) =>
+    row.map((node) => ({ ...node, previousNode: null }))
+  );
+  const start = newGrid[startNode.row][startNode.col];
+  const end = newGrid[endNode.row][endNode.col];
   const visitedNodesInOrder: Node[] = [];
-  startNode.distance = 0;
-  const unvisitedNodes = getAllNodes(grid);
+  start.distance = 0;
+  const unvisitedNodes = getAllNodes(newGrid);
 
   while (unvisitedNodes.length > 0) {
-    sortNodesByDistance(unvisitedNodes, endNode);
+    sortNodesByDistance(unvisitedNodes, end);
     const closestNode = unvisitedNodes.shift();
 
     if (!closestNode || closestNode.isWall) continue;
@@ -22,14 +27,14 @@ export function astar(
     closestNode.isVisited = true;
     visitedNodesInOrder.push(closestNode);
 
-    if (closestNode === endNode) {
+    if (closestNode === end) {
       return {
         visitedNodesInOrder,
-        shortestPath: getNodesInShortestPathOrder(endNode),
+        shortestPath: getNodesInShortestPathOrder(end),
       };
     }
 
-    updateUnvisitedNeighbors(closestNode, grid, endNode);
+    updateUnvisitedNeighbors(closestNode, newGrid);
   }
 
   return { visitedNodesInOrder, shortestPath: [] };
@@ -53,7 +58,7 @@ function sortNodesByDistance(unvisitedNodes: Node[], endNode: Node) {
   );
 }
 
-function updateUnvisitedNeighbors(node: Node, grid: Grid, endNode: Node) {
+function updateUnvisitedNeighbors(node: Node, grid: Grid) {
   const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
   for (const neighbor of unvisitedNeighbors) {
     neighbor.distance = node.distance + 1;

@@ -1,4 +1,5 @@
 export interface Node {
+  id: string;
   row: number;
   col: number;
   isStart: boolean;

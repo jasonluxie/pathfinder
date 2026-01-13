@@ -16,6 +16,7 @@ const GridContainer = () => {
   const [algorithm, setAlgorithm] = useState<Algorithm>("dijkstra");
   const [isMousePressed, setIsMousePressed] = useState(false);
   const [isVisualizing, setIsVisualizing] = useState(false);
+  const [visualizationSpeed, setVisualizationSpeed] = useState<number>(50);
   const { width, height } = useScreenSize();
 
   const cellSize = 28;
@@ -40,6 +41,7 @@ const GridContainer = () => {
 
   const createNode = (row: number, col: number): Node => {
     return {
+      id: `${row}-${col}`,
       row,
       col,
       isStart: false,
@@ -68,27 +70,30 @@ const GridContainer = () => {
   };
 
   const handleNodeClick = (row: number, col: number) => {
-    const newGrid = grid.slice();
-    const node = newGrid[row][col];
+    setGrid((prevGrid) => {
+      const newGrid = prevGrid.map((r) => [...r]);
+      const node = newGrid[row][col];
+      const newNode = { ...node };
 
-    if (activeTool === "start") {
-      if (startNode) {
-        newGrid[startNode.row][startNode.col].isStart = false;
+      if (activeTool === "start") {
+        if (startNode) {
+          newGrid[startNode.row][startNode.col].isStart = false;
+        }
+        newNode.isStart = true;
+        setStartNode(newNode);
+      } else if (activeTool === "end") {
+        if (endNode) {
+          newGrid[endNode.row][endNode.col].isEnd = false;
+        }
+        newNode.isEnd = true;
+        setEndNode(newNode);
+      } else {
+        newNode.isWall = !newNode.isWall;
       }
-      node.isStart = true;
-      setStartNode(node);
-    } else if (activeTool === "end") {
-      if (endNode) {
-        newGrid[endNode.row][endNode.col].isEnd = false;
-      }
-      node.isEnd = true;
-      setEndNode(node);
-    } else {
-      node.isWall = !node.isWall;
-    }
 
-    newGrid[row][col] = node;
-    setGrid(newGrid);
+      newGrid[row][col] = newNode;
+      return newGrid;
+    });
   };
 
   const clearGrid = () => {
@@ -115,32 +120,47 @@ const GridContainer = () => {
     visitedNodesInOrder: Node[],
     shortestPath: Node[]
   ) => {
-    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
-      if (i === visitedNodesInOrder.length) {
+    let frame = 0;
+    const animateFrame = () => {
+      if (frame < visitedNodesInOrder.length) {
+        const node = visitedNodesInOrder[frame];
+        setGrid((prevGrid) => {
+          const newGrid = prevGrid.map((row) =>
+            row.map((n) => (n.row === node.row && n.col === node.col ? { ...n, isVisited: true } : n))
+          );
+          return newGrid;
+        });
+        frame++;
         setTimeout(() => {
-          animateShortestPath(shortestPath);
-        }, 10 * i);
-        return;
+          requestAnimationFrame(animateFrame);
+        }, visualizationSpeed);
+      } else {
+        animateShortestPath(shortestPath);
       }
-      setTimeout(() => {
-        const node = visitedNodesInOrder[i];
-        const newGrid = grid.slice();
-        newGrid[node.row][node.col].isVisited = true;
-        setGrid(newGrid);
-      }, 10 * i);
-    }
+    };
+    requestAnimationFrame(animateFrame);
   };
 
   const animateShortestPath = (shortestPath: Node[]) => {
-    for (let i = 0; i < shortestPath.length; i++) {
-      setTimeout(() => {
-        const node = shortestPath[i];
-        const newGrid = grid.slice();
-        newGrid[node.row][node.col].isPath = true;
-        setGrid(newGrid);
-      }, 50 * i);
-    }
-    setIsVisualizing(false);
+    let frame = 0;
+    const animateFrame = () => {
+      if (frame < shortestPath.length) {
+        const node = shortestPath[frame];
+        setGrid((prevGrid) => {
+          const newGrid = prevGrid.map((row) =>
+            row.map((n) => (n.row === node.row && n.col === node.col ? { ...n, isPath: true } : n))
+          );
+          return newGrid;
+        });
+        frame++;
+        setTimeout(() => {
+          requestAnimationFrame(animateFrame);
+        }, visualizationSpeed);
+      } else {
+        setIsVisualizing(false);
+      }
+    };
+    requestAnimationFrame(animateFrame);
   };
 
   return (
@@ -152,12 +172,12 @@ const GridContainer = () => {
       <div className="grid-container">
         {grid.map((row, rowIndex) => (
           <div className="flex" key={rowIndex}>
-            {row.map((node, nodeIndex) => (
+            {row.map((node) => (
               <GridNode
-                key={nodeIndex}
+                key={node.id}
                 {...node}
-                onMouseDown={() => handleMouseDown(rowIndex, nodeIndex)}
-                onMouseEnter={() => handleMouseEnter(rowIndex, nodeIndex)}
+                onMouseDown={() => handleMouseDown(node.row, node.col)}
+                onMouseEnter={() => handleMouseEnter(node.row, node.col)}
               />
             ))}
           </div>
@@ -171,6 +191,8 @@ const GridContainer = () => {
         startPathfinding={visualizePath}
         clearGrid={clearGrid}
         isVisualizing={isVisualizing}
+        visualizationSpeed={visualizationSpeed}
+        setVisualizationSpeed={setVisualizationSpeed}
       />
     </div>
   );
