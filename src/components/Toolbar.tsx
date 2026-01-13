@@ -10,6 +10,7 @@ interface ToolbarProps {
   setAlgorithm: (algorithm: Algorithm) => void;
   startPathfinding: () => void;
   clearGrid: () => void;
+  isVisualizing: boolean;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -19,6 +20,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   setAlgorithm,
   startPathfinding,
   clearGrid,
+  isVisualizing,
 }) => {
   return (
     <div
@@ -26,6 +28,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
       id="toolbar"
     >
       <button
+        disabled={isVisualizing}
         className={`p-2 ${
           activeTool === "start" ? "bg-green-500" : "bg-gray-300"
         }`}
@@ -34,6 +37,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
         <PiFlagPennantBold />
       </button>
       <button
+        disabled={isVisualizing}
         className={`p-2 ${
           activeTool === "end" ? "bg-red-500" : "bg-gray-300"
         }`}
@@ -42,6 +46,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
         <PiFlagPennantFill />
       </button>
       <button
+        disabled={isVisualizing}
         className={`p-2 ${
           activeTool === "wall" ? "bg-gray-800 text-white" : "bg-gray-300"
         }`}
@@ -50,6 +55,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
         Wall
       </button>
       <select
+        disabled={isVisualizing}
         className="p-2"
         value={algorithm}
         onChange={(e) => setAlgorithm(e.target.value as Algorithm)}
@@ -57,10 +63,19 @@ const Toolbar: React.FC<ToolbarProps> = ({
         <option value="dijkstra">Dijkstra</option>
         <option value="a*">A*</option>
       </select>
-      <button className="p-2 bg-blue-500 text-white" onClick={startPathfinding}>
+      <button
+        disabled={isVisualizing}
+        className="p-2 bg-blue-500 text-white"
+        onClick={startPathfinding}
+      >
         Start
       </button>
-      <button className="p-2" id="reset" onClick={clearGrid}>
+      <button
+        disabled={isVisualizing}
+        className="p-2"
+        id="reset"
+        onClick={clearGrid}
+      >
         <GrPowerReset />
       </button>
     </div>
