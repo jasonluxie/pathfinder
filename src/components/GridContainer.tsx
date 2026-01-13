@@ -3,6 +3,8 @@ import GridNode from "./GridNode";
 import { useScreenSize } from "../hooks/useScreenSize";
 import { Grid, Node, Algorithm } from "../types/types";
 import Toolbar from "./Toolbar";
+import { dijkstra } from "../algorithms/dijkstra";
+import { astar } from "../algorithms/astar";
 
 const GridContainer = () => {
   const [grid, setGrid] = useState<Grid>([]);
@@ -13,6 +15,7 @@ const GridContainer = () => {
   );
   const [algorithm, setAlgorithm] = useState<Algorithm>("dijkstra");
   const [isMousePressed, setIsMousePressed] = useState(false);
+  const [isVisualizing, setIsVisualizing] = useState(false);
   const { width, height } = useScreenSize();
 
   const cellSize = 28;
@@ -50,12 +53,13 @@ const GridContainer = () => {
   };
 
   const handleMouseDown = (row: number, col: number) => {
+    if (isVisualizing) return;
     setIsMousePressed(true);
     handleNodeClick(row, col);
   };
 
   const handleMouseEnter = (row: number, col: number) => {
-    if (!isMousePressed) return;
+    if (isVisualizing || !isMousePressed) return;
     handleNodeClick(row, col);
   };
 
@@ -88,10 +92,55 @@ const GridContainer = () => {
   };
 
   const clearGrid = () => {
+    if (isVisualizing) return;
     const newGrid = createGrid(rows, cols);
     setGrid(newGrid);
     setStartNode(null);
     setEndNode(null);
+  };
+
+  const visualizePath = () => {
+    if (!startNode || !endNode || isVisualizing) return;
+
+    setIsVisualizing(true);
+    const { visitedNodesInOrder, shortestPath } =
+      algorithm === "dijkstra"
+        ? dijkstra(grid, startNode, endNode)
+        : astar(grid, startNode, endNode);
+
+    animate(visitedNodesInOrder, shortestPath);
+  };
+
+  const animate = (
+    visitedNodesInOrder: Node[],
+    shortestPath: Node[]
+  ) => {
+    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+      if (i === visitedNodesInOrder.length) {
+        setTimeout(() => {
+          animateShortestPath(shortestPath);
+        }, 10 * i);
+        return;
+      }
+      setTimeout(() => {
+        const node = visitedNodesInOrder[i];
+        const newGrid = grid.slice();
+        newGrid[node.row][node.col].isVisited = true;
+        setGrid(newGrid);
+      }, 10 * i);
+    }
+  };
+
+  const animateShortestPath = (shortestPath: Node[]) => {
+    for (let i = 0; i < shortestPath.length; i++) {
+      setTimeout(() => {
+        const node = shortestPath[i];
+        const newGrid = grid.slice();
+        newGrid[node.row][node.col].isPath = true;
+        setGrid(newGrid);
+      }, 50 * i);
+    }
+    setIsVisualizing(false);
   };
 
   return (
@@ -119,8 +168,9 @@ const GridContainer = () => {
         setActiveTool={setActiveTool}
         algorithm={algorithm}
         setAlgorithm={setAlgorithm}
-        startPathfinding={() => {}}
+        startPathfinding={visualizePath}
         clearGrid={clearGrid}
+        isVisualizing={isVisualizing}
       />
     </div>
   );
