@@ -1,33 +1,53 @@
-import react, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import GridNode from "./GridNode";
-import Toolbar from "../components/Toolbar";
+import { useScreenSize } from "../hooks/useScreenSize";
+import { Grid, Node } from "../types/types";
 
 const GridContainer = () => {
-  const [startNode, setStartNode] = useState();
-  const [endNode, setEndNode] = useState();
-  const [activeFlag, setActiveFlag] = useState("start");
-  const [startFlagNode, setStartFlagNode] = useState("");
-  const [endFlagNode, setEndFlagNode] = useState("");
+  const [grid, setGrid] = useState<Grid>([]);
+  const { width, height } = useScreenSize();
 
-  const cellSize = 28; 
-  const verticalAxis = Math.floor(window.innerHeight / cellSize);
-  const horizontalAxis = Math.floor(window.innerWidth / cellSize);
+  const cellSize = 28;
+  const rows = Math.floor(height / cellSize);
+  const cols = Math.floor(width / cellSize);
 
-  const column = [];
-  for (let y = 0; y < verticalAxis; y++) {
-    const rowNodes: Array<JSX.Element> = [];
-    for (let x = 0; x < horizontalAxis; x++) {
-      rowNodes.push(
-        <GridNode x={x + 1} y={y + 1} key={`node${x}${y}`} />
-      );
+  useEffect(() => {
+    const newGrid = createGrid(rows, cols);
+    setGrid(newGrid);
+  }, [rows, cols]);
+
+  const createGrid = (rows: number, cols: number) => {
+    const grid: Grid = [];
+    for (let row = 0; row < rows; row++) {
+      grid.push([]);
+      for (let col = 0; col < cols; col++) {
+        grid[row].push(createNode(row, col));
+      }
     }
-    const row = (
-      <div className="flex" id={`row${y + 1}`} key={`key${y + 1}`}>
-        {rowNodes}
-      </div>
-    );
-    column.push(row);
-  }
+    return grid;
+  };
+
+  const createNode = (row: number, col: number): Node => {
+    return {
+      row,
+      col,
+      isStart: false,
+      isEnd: false,
+      isWall: false,
+      isVisited: false,
+      isPath: false,
+      distance: Infinity,
+      previousNode: null,
+    };
+  };
+
+  const handleNodeClick = (row: number, col: number) => {
+    const newGrid = grid.slice();
+    const node = newGrid[row][col];
+    node.isWall = !node.isWall;
+    newGrid[row][col] = node;
+    setGrid(newGrid);
+  };
 
   return (
     <div
@@ -35,11 +55,21 @@ const GridContainer = () => {
       className="flex justify-center items-center h-screen w-screen bg-light-grey"
     >
       <div className="grid-container">
-        {column.map((child) => child)}
+        {grid.map((row, rowIndex) => (
+          <div className="flex" key={rowIndex}>
+            {row.map((node, nodeIndex) => (
+              <GridNode
+                key={nodeIndex}
+                {...node}
+                onClick={() => handleNodeClick(rowIndex, nodeIndex)}
+              />
+            ))}
+          </div>
+        ))}
       </div>
-      <Toolbar props={setStartNode, setEndNode, setActiveFlag}></Toolbar>
     </div>
   );
 };
 
 export default GridContainer;
+
